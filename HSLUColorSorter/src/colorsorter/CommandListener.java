@@ -36,9 +36,11 @@ public class CommandListener extends Thread {
 		    System.out.println("Empfangener Befehl:" +commands);
 		    if (commands.equals("start")) {
 		    	startev3();
+		    	new CommandListener();
 		    }
 		    else if (commands.equals("stop")) {
 		    	stopev3();
+		    	new CommandListener();
 		    }
 		    else if (commands.equals("filterspecificcolor")) {
 		    	String color = (String) obj.get("color");
