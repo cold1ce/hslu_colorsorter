@@ -45,8 +45,8 @@ public class TestKlasse {
 		 //TestKlasse colortest = new TestKlasse();
 		 
 		 //Neuen Thread Grundbetrieb aufrufen, ermöglicht simultanes Abarbeiten mehrerer Prozesse
-		 Grundbetrieb g1 = new Grundbetrieb();
-		 g1.start();
+		 //Grundbetrieb g1 = new Grundbetrieb();
+		 //g1.start();
 		 
 		 //Neuen Scanner Thread aufrufen
 		 Scanner2 sc1 = new Scanner2();
