@@ -17,57 +17,47 @@ import org.json.simple.parser.JSONParser;
 
 public class CommandListener extends Thread {
 
-	public void run() {
-		//Dauerschleife :-D
-		int a = 1;
-		int b = 2;
-		while(a!=b) {
-			String clientSentence; 
-			try {
-			    ServerSocket welcomeSocket = new ServerSocket(5555);
-			    System.out.println("Höre auf Befehle...");
-			    Socket connectionSocket = welcomeSocket.accept();
-			    BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-			    clientSentence = inFromClient.readLine();
-			    //Pascal: JSON hat hier irgendwie noch nicht funktioniert, im Moment reagiert 
-			    //er auf ganz normale Strings, die übermittelt werden.
-			    //JSONParser parser = new JSONParser();
-			    //JSONObject obj = (JSONObject) parser.parse(clientSentence);
-			    //String commands = (String) obj.get("commands"); 
-			    String commands = clientSentence;
-			    welcomeSocket.close();
-			    System.out.println("Empfangener Befehl:" +commands);
-			    if (commands.equals("start")) {
-			    	startev3();
-			    }
-			    else if (commands.equals("stop")) {
-			    	stopev3();
-			    }
-			    else if (commands.equals("filterspecificcolor")) {
-			    	//String color = (String) obj.get("color");
-			    	//filterspecificcolorev3(color);
-			    }
-			    else if (commands.equals("filterspecificcolorandnumber")) {
-			    	//String color = (String) obj.get("color");
-			    	//int number = (int) obj.get("number");
-			    	//filterspecificcolorandnumberev3(color,number);
-			    }
-			    else if(commands.equals("filterspecificcolorandnumberlist")) {
-			    	  // Daten kommen mittels JSON Array an
-			    	   //String colorlist = (String) obj.get("colorlist");
-			    	   //String numberlist = (String) obj.get("colorlist");
-			    }
-			    else {
-			    	//nichts
-			    }
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			finally {
-			}  
+		public static void main(String argv[]) throws Exception {
+			ServerSocket welcomeSocket = new ServerSocket(5555);
+		    System.out.println("Höre auf Befehle...");
+		    Socket connectionSocket = welcomeSocket.accept();
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+	        String clientSentence = reader.readLine();
+	        System.out.println("Client data: "+clientSentence);
+	        connectionSocket.close();
+	        welcomeSocket.close();
+		    //Pascal: JSON hat hier irgendwie noch nicht funktioniert, im Moment reagiert 
+		    //er auf ganz normale Strings, die übermittelt werden.
+		    JSONParser parser = new JSONParser();
+		    JSONObject obj = (JSONObject) parser.parse(clientSentence);
+		    String commands = (String) obj.get("commands"); 
+		    //String commands = clientSentence;
+		    welcomeSocket.close();
+		    System.out.println("Empfangener Befehl:" +commands);
+		    if (commands.equals("start")) {
+		    	startev3();
+		    }
+		    else if (commands.equals("stop")) {
+		    	stopev3();
+		    }
+		    else if (commands.equals("filterspecificcolor")) {
+		    	String color = (String) obj.get("color");
+		    	filterspecificcolorev3(color);
+		    }
+		    else if (commands.equals("filterspecificcolorandnumber")) {
+		    	String color = (String) obj.get("color");
+		    	int number = (int) obj.get("number");
+		    	filterspecificcolorandnumberev3(color,number);
+		    }
+		    else if(commands.equals("filterspecificcolorandnumberlist")) {
+		    	  // Daten kommen mittels JSON Array an
+		    	   String colorlist = (String) obj.get("colorlist");
+		    	   String numberlist = (String) obj.get("colorlist");
+		    }
+		    else {
+		    	//nichts
+		    }
 		}
-	}	
 	    
 	    protected static void startev3() throws IOException {
 	    	Sortierer.machinerunning = true;
