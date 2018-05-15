@@ -67,6 +67,7 @@ public class Scannen extends Thread{
 			if (colorid > 0) {
 				System.out.println("Farbe "+getColorName(colorid)+" wurde erkannt.");
 				System.out.println("Werfe Stein ab...");
+				
 				abwerfen(colorid);
 				DataSender d1 = new DataSender();
 				try {
