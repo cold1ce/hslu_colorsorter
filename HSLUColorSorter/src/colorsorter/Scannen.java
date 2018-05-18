@@ -24,7 +24,7 @@ public class Scannen extends Thread{
 	public static float[] colorSample;
 	public static SensorMode color;
 	public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5}; 
-	public static RegulatedMotor m3 = new EV3LargeRegulatedMotor(MotorPort.A);
+	
 	public static Audio audio;
 	public static Brick brick;
 	public static boolean auflegen;
@@ -32,14 +32,15 @@ public class Scannen extends Thread{
 	public void run() {
 		//Förderband starten, davor Ton abspielen
 		System.out.println("Förderband gestartet.");
+		Sortierer.feederband = new EV3LargeRegulatedMotor(MotorPort.A);
 		Sound.playNote(PIANO, 150, 600);
 		Delay.msDelay(400);
 		Sound.playNote(PIANO, 150, 600);
 		Delay.msDelay(400);
 		Sound.playNote(PIANO, 150, 600);
 		Delay.msDelay(1000);
-		m3.setSpeed(40);
-		m3.backward();
+		Sortierer.feederband.setSpeed(40);
+		Sortierer.feederband.backward();
 		
 		brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1");
@@ -57,31 +58,46 @@ public class Scannen extends Thread{
 				
 		//Solange die Schleife nicht durch Tastendruck unterbrochen wird, scanne permanent alle 50ms
 		//das Förderband.
+		Sortierer.timewithoutstoneonfeederband = 0.0;
 		while (!Thread.currentThread().isInterrupted() && Sortierer.machinerunning == true) {
-			//Abrufen des aktuellen Samples, ein Sample ist der RGB-Wert zu genau
-			//dem Zeitpunkt des Aufrufs.
-			color.fetchSample(colorSample, 0);
-			//Das Sample überprüfen ob es zu einem Stein gehört oder nicht.
-			int colorid = checkForColor(colorSample);
-			//Wenn das Sample zu einem Stein gehört, Stein abwerfen.
-			if (colorid > 0) {
-				System.out.println("Farbe "+getColorName(colorid)+" wurde erkannt.");
-				System.out.println("Werfe Stein ab...");
-				
-				abwerfen(colorid);
-				DataSender d1 = new DataSender();
-				try {
-					d1.run(getColorName(colorid));
-				} catch (IOException e) {
-					// TODO Automatisch generierter Erfassungsblock
-					e.printStackTrace();
-				}
+			if (Sortierer.timewithoutstoneonfeederband >= 10.0) {
+				Sortierer.machineoutofstone = true;
+				break;
 			}
+				// Abrufen des aktuellen Samples, ein Sample ist der RGB-Wert zu genau
+				//dem Zeitpunkt des Aufrufs.
+				color.fetchSample(colorSample, 0);
+				//Das Sample überprüfen ob es zu einem Stein gehört oder nicht.
+				int colorid = checkForColor(colorSample);
+				//Wenn das Sample zu einem Stein gehört, Stein abwerfen.
+				if (colorid > 0) {
+					Sortierer.timewithoutstoneonfeederband = 0;
+					System.out.println("Farbe "+getColorName(colorid)+" wurde erkannt.");
+					System.out.println("Werfe Stein ab...");
+					
+					abwerfen(colorid);
+					/*DataSender d1 = new DataSender();
+					try {
+						d1.run(getColorName(colorid));
+					} catch (IOException e) {
+						// TODO Automatisch generierter Erfassungsblock
+						e.printStackTrace();
+					}*/
+				}
+				else {
+					Sortierer.timewithoutstoneonfeederband += 0.05;
+				}
+			System.out.println(Sortierer.timewithoutstoneonfeederband);
 			Delay.msDelay(50);
-		}		
+			
+		}
+		
 		colorSensor.close();
-		m3.stop();
-		m3.close();
+		Sortierer.feederband.stop();
+		
+		System.out.println("Scan Thread vorbei.");
+		Sortierer.feederband.close();
+		this.interrupt();
 		
 	}
 	//Überprüft ein Farb-Sample. Wenn die Daten im Farbspektrum eines Steins
@@ -119,64 +135,64 @@ public class Scannen extends Thread{
 				m1.setSpeed(400);
 				m1.rotate(60);
 				m1.close();
-				m3.setSpeed(200);
+				Sortierer.feederband.setSpeed(200);
 				Delay.msDelay(1700);
-				m3.stop();
+				Sortierer.feederband.stop();
 				RegulatedMotor m11 = new EV3MediumRegulatedMotor(MotorPort.C);
 				m11.setSpeed(75);
 				m11.rotate(120);
 				m11.close();
 				Delay.msDelay(300);
-				m3.setSpeed(40);
-				m3.backward();
+				Sortierer.feederband.setSpeed(40);
+				Sortierer.feederband.backward();
 			}
 			else if (farbeid == 2) {
 				RegulatedMotor m1 = new EV3MediumRegulatedMotor(MotorPort.C);
 				m1.setSpeed(400);
 				m1.rotate(-60);
 				m1.close();
-				m3.setSpeed(200);
+				Sortierer.feederband.setSpeed(200);
 				Delay.msDelay(1700);
-				m3.stop();
+				Sortierer.feederband.stop();
 				RegulatedMotor m11 = new EV3MediumRegulatedMotor(MotorPort.C);
 				m11.setSpeed(75);
 				m11.rotate(-120);
 				m11.close();
 				Delay.msDelay(300);
-				m3.setSpeed(40);
-				m3.backward();
+				Sortierer.feederband.setSpeed(40);
+				Sortierer.feederband.backward();
 			}
 			else if (farbeid == 3) {
 				RegulatedMotor m1 = new EV3MediumRegulatedMotor(MotorPort.B);
 				m1.setSpeed(400);
 				m1.rotate(60);
 				m1.close();
-				m3.setSpeed(200);
+				Sortierer.feederband.setSpeed(200);
 				Delay.msDelay(2600);
-				m3.stop();
+				Sortierer.feederband.stop();
 				RegulatedMotor m11 = new EV3MediumRegulatedMotor(MotorPort.B);
 				m11.setSpeed(75);
 				m11.rotate(120);
 				m11.close();
 				Delay.msDelay(300);
-				m3.setSpeed(40);
-				m3.backward();
+				Sortierer.feederband.setSpeed(40);
+				Sortierer.feederband.backward();
 			}
 			else if (farbeid == 4) {
 				RegulatedMotor m1 = new EV3MediumRegulatedMotor(MotorPort.B);
 				m1.setSpeed(400);
 				m1.rotate(-60);
 				m1.close();
-				m3.setSpeed(200);
+				Sortierer.feederband.setSpeed(200);
 				Delay.msDelay(2600);
-				m3.stop();
+				Sortierer.feederband.stop();
 				RegulatedMotor m11 = new EV3MediumRegulatedMotor(MotorPort.B);
 				m11.setSpeed(75);
 				m11.rotate(-120);
 				m11.close();
 				Delay.msDelay(300);
-				m3.setSpeed(40);
-				m3.backward();
+				Sortierer.feederband.setSpeed(40);
+				Sortierer.feederband.backward();
 			}	
 		}
 		

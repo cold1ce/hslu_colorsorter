@@ -11,51 +11,84 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import lejos.hardware.Sound;
+
+
 public class CommandListener extends Thread {
 
-		public static void main(String[] args) throws IOException, ParseException {
+public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5}; 
+
+		public void run(){
 		   // Aufbau eines Loops und Aufrufen der Methode Auslagerung die eine Dauerhafte Socket Verbindung aufbaut
 			while(true) {
-			   auslagerung();
+			   try {
+				   listenForRaspiCommands();
+			   } 
+			   catch (IOException e) { 
+				   e.printStackTrace();
+			   } 
+			   catch (ParseException e) {
+				   e.printStackTrace();
+			   }
 		   }
 		}
 	
-		public static void auslagerung() throws IOException, ParseException {
-			// Aufbau des Sockets
+		public static void listenForRaspiCommands() throws IOException, ParseException {
+			System.out.println("Höre auf weitere Befehle...");
+			// Aufbau des Sockets & Akzeptieren von eingehenden Verbindungen
 			ServerSocket welcomeSocket = new ServerSocket(5555);
-			// Aktzeptieren der Verbindung
 		    Socket connectionSocket = welcomeSocket.accept();
+		    // Auslesen des ankommenden Befehls, darauf schließen des Sockets.
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	        String clientSentence = reader.readLine();
+	        Sound.playNote(PIANO, 900, 100);
+	        System.out.println("Angekommener Befehl: "+clientSentence);
 	        connectionSocket.close();
 	        welcomeSocket.close();
 	        
+	        // Auslesen des ankommenden Befehls (Dieser wird als JSON-Objekt übertragen)
 		    JSONParser parser = new JSONParser();
 		    JSONObject obj = (JSONObject) parser.parse(clientSentence);
+		    
 		    String commands = (String) obj.get("commands"); 
 		    
+		    // Auswerten, was der eingegangene Befehl bedeutet
+		    // Danach Ausführen der passenden Methode
 		    if (commands.equals("start")) {
-		    	startev3();
-		    }else if (commands.equals("stop")) {
-		    	stopev3();
-		    }else if (commands.equals("filterspecificcolor")) {
+		    	if (Sortierer.machinerunning == true) {
+		    		System.out.println("Gerät läuft bereits!");
+		    	}
+		    	else if (Sortierer.machinerunning == false) {
+		    		startev3();
+		    	}
+		    }
+		    else if (commands.equals("stop")) {
+		    	if (Sortierer.machinerunning == true) {
+		    		stopev3();
+		    	}
+		    	else if (Sortierer.machinerunning == false) {
+		    		System.out.println("Maschine läuft noch gar nicht!");
+		    	}
+		    }
+		    else if (commands.equals("filterspecificcolor")) {
 		    	String color = (String) obj.get("color");
 		    	filterspecificcolorev3(color);
-		    }else if (commands.equals("filterspecificcolorandnumber")) {
+		    }
+		    else if (commands.equals("filterspecificcolorandnumber")) {
 		    	String color = (String) obj.get("color");
 		    	int number = (int) obj.get("number");
 		    	filterspecificcolorandnumberev3(color,number);
-		    }else if(commands.equals("filterspecificcolorandnumberlist")) {
-		    	  // Daten kommen mittels JSON Array an
+		    }
+		    else if(commands.equals("filterspecificcolorandnumberlist")) {
 		    	   String colorlist = (String) obj.get("colorlist");
 		    	   String numberlist = (String) obj.get("colorlist");
-		    }else {
-		    	//nichts
+		    }
+		    else {
+		    	//Befehl nicht aufgeführt.
 		    }
 		}
 		
@@ -67,6 +100,7 @@ public class CommandListener extends Thread {
 	    
 	    protected static void stopev3() {
 	    	Sortierer.machinerunning = false;
+	    	
 	    }
 	    
 	    protected static void filterspecificcolorev3(String color) {

@@ -12,34 +12,27 @@ import lejos.utility.Delay;
 
 public class Auflegen extends Thread {
 
-	RegulatedMotor m4 = new EV3LargeRegulatedMotor(MotorPort.D);
+	
 	
 	public void run() {
+		Sortierer.slider = new EV3LargeRegulatedMotor(MotorPort.D);
 		//System.out.println("Steine auflegen...");
 		Delay.msDelay(5000);
-		while (!Thread.currentThread().isInterrupted()) {
-			while (Sortierer.machinerunning==true) {
-				//System.out.println("Stein auflegen.");
+			while (!Thread.currentThread().isInterrupted() && Sortierer.machinerunning == true) {
 				//Schieber vorschieben
-				m4.setSpeed(40);
-				m4.rotate(-85);
+				Sortierer.slider.setSpeed(40);
+				Sortierer.slider.rotate(-85);
 				//Kurz abwarten
-				Delay.msDelay(150);
+				Delay.msDelay(200);
 				//Schieber zurückschieben
-				m4.rotate(85);
+				Sortierer.slider.rotate(85);
 				//Für 4 Sekunden pausieren
 				Delay.msDelay(4000);
 			 }
-			try {
-				//Für 1 Sekunde pausieren.
-				Thread.sleep(1000);
-				}
-			catch (InterruptedException intExc) {
-				this.interrupt();
-				break;
-			}
-		}
-		m4.close();
+			//Sortierer.slider.close();
+	System.out.println("Auflegen Thread vorbei.");
+	Sortierer.slider.close();
+	this.interrupt();	
 	}
 	
 }
