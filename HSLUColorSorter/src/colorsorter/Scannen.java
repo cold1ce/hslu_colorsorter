@@ -60,8 +60,9 @@ public class Scannen extends Thread{
 		//das Förderband.
 		Sortierer.timewithoutstoneonfeederband = 0.0;
 		while (!Thread.currentThread().isInterrupted() && Sortierer.machinerunning == true) {
-			if (Sortierer.timewithoutstoneonfeederband >= 10.0) {
+			if (Sortierer.timewithoutstoneonfeederband >= 15.0) {
 				Sortierer.machineoutofstone = true;
+				Sortierer.machinerunning = false;
 				break;
 			}
 				// Abrufen des aktuellen Samples, ein Sample ist der RGB-Wert zu genau

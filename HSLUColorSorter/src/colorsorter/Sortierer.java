@@ -18,7 +18,11 @@ public class Sortierer {
 	
 	public static void main(String[] args) {
 		System.out.println("Programm gestartet.");
-	
+		
+		machineoutofstone = false;
+		timewithoutstoneonfeederband = 0;
+		
+		
 		//Den Listener starten, der Befehle vom Raspberry Pi annimmt.
 		System.out.println("Listener-Thread gestartet.");
 		CommandListener cl = new CommandListener();

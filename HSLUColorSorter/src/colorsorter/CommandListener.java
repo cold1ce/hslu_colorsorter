@@ -94,6 +94,7 @@ public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5};
 		
 	    protected static void startev3() throws IOException {
 	    	Sortierer.machinerunning = true;
+	    	Sortierer.machineoutofstone = false;
 	 	   	Scannen s1 = new Scannen();
 	 	   	s1.start();
 	    }
