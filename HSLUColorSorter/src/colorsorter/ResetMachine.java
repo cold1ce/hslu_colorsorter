@@ -22,7 +22,7 @@ public class ResetMachine {
 		// Setzt Variablen der Maschine auf den Ursprungszustand
 		Machine.machineoutofstone = false;
 		Machine.timewithoutstoneonfeederband = 0.0;
-		Machine.automaticoff = 120.0;
+		Machine.automaticoff = 20.0;
 		Machine.dropred = Machine.dropyellow = 
 		Machine.dropblue = Machine.dropgreen = false;
 		

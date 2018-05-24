@@ -23,7 +23,7 @@ public class Machine {
 	// Motor, der den Schieber antreibt.
 	public static RegulatedMotor slider;
 	
-	// Die Zeit in ms seit welcher kein Stein mehr erkannt wurde
+	// Die Zeit in Sek. seit welcher kein Stein mehr erkannt wurde
 	public static double timewithoutstoneonfeederband;
 	
 	// Gibt an ob die Maschine keine Steine mehr hat
@@ -35,7 +35,7 @@ public class Machine {
 	public static int redstonescounted, yellowstonescounted, 
 	greenstonescounted, bluestonescounted;
 	
-	// Zeit in ms, nach dem sich die Maschine ausschalten soll wenn kein
+	// Zeit in Sek., nach dem sich die Maschine ausschalten soll wenn kein
 	// Stein mehr angekommen ist.
 	public static double automaticoff;
 	

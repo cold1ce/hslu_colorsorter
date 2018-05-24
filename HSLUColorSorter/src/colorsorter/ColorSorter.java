@@ -40,6 +40,8 @@ public class ColorSorter extends Thread{
 	
 	
 	public void run() {
+		//LED des EV3 auf schnell blinkendes Grün umstellen
+		Button.LEDPattern(7);
 		
 		// Den Farbsensor auf Port 1 registrieren
 		brick = BrickFinder.getDefault();
@@ -52,10 +54,8 @@ public class ColorSorter extends Thread{
 		colorSample = new float[3];
 		
 		
-		// Förderband starten, Licht auf Grün stellen und davor 
-		// 3 Töne abspielen
+		// Förderband starten, davor 3 Töne abspielen
 		Machine.feederband = new EV3LargeRegulatedMotor(MotorPort.A);
-		Button.LEDPattern(4);
 		Sound.playNote(PIANO, 150, 600);
 		Delay.msDelay(400);
 		Sound.playNote(PIANO, 150, 600);
@@ -64,7 +64,10 @@ public class ColorSorter extends Thread{
 		Delay.msDelay(1000);
 		Machine.feederband.setSpeed(40);
 		Machine.feederband.backward();
-		System.out.println("Förderband gestartet.");
+		System.out.println("Foerderband gestartet.");
+		
+		//Farbe auf grün blinkend stellen
+		Button.LEDPattern(4);
 		
 		//Neuen Thread StoneSlider aufrufen, zuständig für das Auflegen der Steine auf das Förderband
 		StoneSlider a1 = new StoneSlider();
@@ -91,25 +94,28 @@ public class ColorSorter extends Thread{
 			// die Farbe identifiziert werden kann zugewiesen (1=Gelb, 2=Rot, 3=Blau, 4=Grün)
 			int colorid = checkForColor(colorSample);
 			
-			// Wenn das Sample zu einem Stein gehört, Stein abwerfen. Dies soll aber nur geschehen
-			// wenn auch ein Filter auf dieser Steinfarbe gesetzt ist, der Stein also auch abgeworfen
-			// werden soll.
-			if ((colorid > 0 && checkForDrop(colorid)) == true) {
+			// Wenn das aktuell gemesene Sample zu einem Stein gehört:
+			if (colorid > 0 ) {
+				
 				// Zähler für Zeit ohne Stein wieder resetten.
 				Machine.timewithoutstoneonfeederband = 0.0;
 				
-				// Den Zähler für die Steine um 1 erhöhen
-				Machine.stonescounted += 1;
-				
-				System.out.println("Farbe "+getColorName(colorid)+" wurde erkannt. Werfe Stein ab...");
-				
-				// Eine Meldung an den Raspberry Pi schicken, dass ein Stein erkannt wurde, welcher nun 
-				// abgeworfen wird.
-				DataSender d1 = new DataSender("scannedstone", getColorName(colorid), giveRGBString(colorSample));
-				d1.start();
-				
-				// Den Abwurf-Mechanismus starten.
-		    	abwerfen(colorid);
+				// Wenn ein Filter auf diesen Stein gesetzt ist, d.h dieser
+				// auch abgeworfen werden soll:
+				if (checkForDrop(colorid) == true) {	
+					// Den Zähler für die Steine um 1 erhöhen
+					Machine.stonescounted += 1;
+					
+					System.out.println("Farbe "+getColorName(colorid)+" wurde erkannt. Werfe Stein ab...");
+					
+					// Eine Meldung an den Raspberry Pi schicken, dass ein Stein erkannt wurde, welcher nun 
+					// abgeworfen wird.
+					DataSender d1 = new DataSender("scannedstone", getColorName(colorid), giveRGBString(colorSample));
+					d1.start();
+					
+					// Den Abwurf-Mechanismus starten.
+			    	abwerfen(colorid);
+				}
 			}
 			
 			// Alle 50ms wird das Förderband gescannt, wird kein Stein erkannt, wird
