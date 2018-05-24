@@ -26,7 +26,7 @@ public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5};
 		   // Aufbau eines Loops und Aufrufen der Methode Auslagerung die eine Dauerhafte Socket Verbindung aufbaut
 			while(true) {
 			   try {
-				   listenForRaspiCommands();
+				   listenForRaspicommand();
 			   } 
 			   catch (IOException e) { 
 				   e.printStackTrace();
@@ -37,10 +37,10 @@ public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5};
 		   }
 		}
 	
-		public static void listenForRaspiCommands() throws IOException, ParseException {
-			System.out.println("Höre auf weitere Befehle...");
+		public static void listenForRaspicommand() throws IOException, ParseException {
+			System.out.println("Warte auf Befehle...");
 			// Aufbau des Sockets & Akzeptieren von eingehenden Verbindungen
-			ServerSocket welcomeSocket = new ServerSocket(5555);
+			ServerSocket welcomeSocket = new ServerSocket(Machine.socket1);
 		    Socket connectionSocket = welcomeSocket.accept();
 		    // Auslesen des ankommenden Befehls, darauf schließen des Sockets.
 		    BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
@@ -54,36 +54,47 @@ public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5};
 		    JSONParser parser = new JSONParser();
 		    JSONObject obj = (JSONObject) parser.parse(clientSentence);
 		    
-		    String commands = (String) obj.get("commands"); 
+		    String command = (String) obj.get("command"); 
 		    
 		    // Auswerten, was der eingegangene Befehl bedeutet
 		    // Danach Ausführen der passenden Methode
-		    if (commands.equals("start")) {
-		    	if (Sortierer.machinerunning == true) {
+		    if (command.equals("start")) {
+		    	if (Machine.machinerunning == true) {
 		    		System.out.println("Gerät läuft bereits!");
 		    	}
-		    	else if (Sortierer.machinerunning == false) {
+		    	else if (Machine.machinerunning == false) {
 		    		startev3();
 		    	}
 		    }
-		    else if (commands.equals("stop")) {
-		    	if (Sortierer.machinerunning == true) {
+		    else if (command.equals("stop")) {
+		    	if (Machine.machinerunning == true) {
 		    		stopev3();
 		    	}
-		    	else if (Sortierer.machinerunning == false) {
+		    	else if (Machine.machinerunning == false) {
 		    		System.out.println("Maschine läuft noch gar nicht!");
 		    	}
 		    }
-		    else if (commands.equals("filterspecificcolor")) {
-		    	String color = (String) obj.get("color");
-		    	filterspecificcolorev3(color);
+		    else if (command.equals("getstatus")) {
+		    	getStatus();
 		    }
-		    else if (commands.equals("filterspecificcolorandnumber")) {
+		    
+		    
+		    else if (command.equals("filter")) {
+		    	String color = (String) obj.get("color");
+		    	String status = (String) obj.get("status");
+		    	if (status.equalsIgnoreCase("true") || status.equalsIgnoreCase("false")) {
+		    	    boolean statusbool = Boolean.valueOf(status);
+		    	    System.out.println("Color ist:" +color);
+			    	filter(color, statusbool); 
+		    	}
+
+		    }
+		    else if (command.equals("filterspecificcolorandnumber")) {
 		    	String color = (String) obj.get("color");
 		    	int number = (int) obj.get("number");
 		    	filterspecificcolorandnumberev3(color,number);
 		    }
-		    else if(commands.equals("filterspecificcolorandnumberlist")) {
+		    else if(command.equals("filterspecificcolorandnumberlist")) {
 		    	   String colorlist = (String) obj.get("colorlist");
 		    	   String numberlist = (String) obj.get("colorlist");
 		    }
@@ -93,20 +104,41 @@ public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5};
 		}
 		
 	    protected static void startev3() throws IOException {
-	    	Sortierer.machinerunning = true;
-	    	Sortierer.machineoutofstone = false;
-	 	   	Scannen s1 = new Scannen();
+	    	Machine.machinerunning = true;
+	    	Machine.machineoutofstone = false;
+	 	   	ColorSorter s1 = new ColorSorter();
 	 	   	s1.start();
+	 	   	DataSender d1 = new DataSender("response");
+	 	   	d1.start();
 	    }
 	    
 	    protected static void stopev3() {
-	    	Sortierer.machinerunning = false;
+	    	Machine.machinerunning = false;
+	    	DataSender d1 = new DataSender("response");
+	 	   	d1.start();
+	    	
+	    }
+	    protected static void getStatus() throws IOException {
+	    	DataSender d1 = new DataSender("status");
+	    	d1.start();
+	    	
 	    	
 	    }
 	    
-	    protected static void filterspecificcolorev3(String color) {
-	 	   // Es wird nach einer speziellen Farbe gefiltert
-	 	   // Es wird auf eine Antwort gewartet
+	    protected static void filter(String color, boolean status) {
+	    	System.out.println("color "+color);
+	 	   	if (color.equals("yellow")) {
+	 	   		Machine.dropyellow = status;
+	 	   	}
+	 	   	if (color.equals("red")) {
+	 	   		Machine.dropred = status;
+	 	   	}
+	 	   	if (color.equals("green")) {
+	 	   		Machine.dropgreen = status;
+	 	   	}
+	 	   	if (color.equals("blue")) {
+	 	   		Machine.dropblue = status;
+	 	   	}
 	    }
 	    
 	    protected static void filterspecificcolorandnumberev3(String color,int number) {
