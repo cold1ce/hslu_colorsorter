@@ -249,14 +249,20 @@ public class ColorSorter extends Thread{
 		}		
 	}
 	
-	//Gibt aus einem Sample die gerundeten RGB-Werte zurück. 
+	//Gibt aus einem Sample die gerundeten EV3-RGB-Werte zurück. 
 	public static String printRGB(float[] colorSample) {
 		return "R: "+(Math.round(1000.0 * colorSample[0]) / 1000.0)+"R: "+(Math.round(1000.0 * colorSample[1]) / 1000.0)+"B: "+(Math.round(1000.0 * colorSample[2]) / 1000.0);
 	}
 	
-	//Gibt aus einem Sample die gerundeten RGB-Werte mit Kommata zurück. 
+	//Gibt aus einem Sample die gerundeten 255-RGB-Werte mit Kommata zurück. 
 	public static String giveRGBString(float[] colorSample) {
-		return ((Math.round(1000.0 * colorSample[0]) / 1000.0)+", "+(Math.round(1000.0 * colorSample[1]) / 1000.0)+", "+(Math.round(1000.0 * colorSample[2]) / 1000.0));
+		int[] colorSampleInt = new int[colorSample.length];
+		for (int i=0; i < colorSample.length; i++) {
+			//Umrechnen auf die offizielle RGB-Farbspanne mit Werten von 0 - 255
+			colorSample[i] = colorSample[i]*1000;
+			colorSampleInt[i] = (int) Math.round(colorSample[i]);
+		}
+		return (colorSampleInt[0]+", "+colorSampleInt[1]+", "+colorSampleInt[2]);
 	}
 	
 	public static boolean checkForDrop(int colorid) {

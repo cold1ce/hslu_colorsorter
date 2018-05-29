@@ -44,7 +44,4 @@ public class DataSender extends Thread {
 	    clientSocket.close();
 	}
 	
-	public void sendScannedStone(int farbid) {
-		
-	}
 }
