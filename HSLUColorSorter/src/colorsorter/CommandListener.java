@@ -41,7 +41,7 @@ public class CommandListener extends Thread {
 		}
 	
 		public static void listenForRaspiCommand() throws IOException, ParseException {
-			//System.out.println("Warte auf neuen Befehl...");
+			System.out.println("Warte auf neuen Befehl...");
 			// Aufbau des Sockets & Akzeptieren von eingehenden Verbindungen
 			ServerSocket welcomeSocket = new ServerSocket(Machine.socket1);
 		    Socket connectionSocket = welcomeSocket.accept();
