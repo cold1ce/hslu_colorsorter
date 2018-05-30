@@ -135,6 +135,8 @@ public class ColorSorter extends Thread{
 		Machine.feederband.stop();
 		System.out.println("Scan Thread vorbei.");
 		Machine.feederband.close();
+		DataSender d1 = new DataSender("responsemachinestopped");
+		
 		Button.LEDPattern(6);
 		this.interrupt();
 		
