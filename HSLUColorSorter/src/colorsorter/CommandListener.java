@@ -23,7 +23,7 @@ public class CommandListener extends Thread {
 	//Um Töne abspielen zu können.
 	public final static int[] PIANO = new int[]{4, 25, 500, 7000, 5}; 
 
-		public void run(){
+		public void run() {
 			// Aufbau eines Loops und Aufrufen der Methode 
 			// listenForRaspiCommand die eine Verbindung aufbaut und
 			// auf Befehle wartet.
@@ -71,7 +71,7 @@ public class CommandListener extends Thread {
 		    if (command.equals("start")) {
 		    	if (Machine.machinerunning == true) {
 		    		//System.out.println("Gerät läuft bereits!");
-		    		DataSender d1 = new DataSender("response");
+		    		DataSender d1 = new DataSender("responsefailure");
 		    		d1.start();
 		    	}
 		    	else if (Machine.machinerunning == false) {
@@ -86,7 +86,7 @@ public class CommandListener extends Thread {
 		    	}
 		    	else if (Machine.machinerunning == false) {
 		    		System.out.println("Maschine läuft noch gar nicht!");
-		    		DataSender d1 = new DataSender("response");
+		    		DataSender d1 = new DataSender("responsefailure");
 		    		d1.start();
 		    	}
 		    }
@@ -117,14 +117,14 @@ public class CommandListener extends Thread {
 	    	Machine.machineoutofstone = false;
 	 	   	ColorSorter s1 = new ColorSorter();
 	 	   	s1.start();
-	 	   	DataSender d1 = new DataSender("response");
+	 	   	DataSender d1 = new DataSender("responsedone");
 	 	   	d1.start();
 	    }
 	    
 	    // Stopt den Sortiervorgang
 	    protected static void stopev3() {
 	    	Machine.machinerunning = false;
-	    	DataSender d1 = new DataSender("response");
+	    	DataSender d1 = new DataSender("responsemachinestopped");
 	 	   	d1.start(); 	
 	    }
 	    
@@ -151,7 +151,7 @@ public class CommandListener extends Thread {
 	 	   	if (color.equals("blue")) {
 	 	   		Machine.dropblue = status;
 	 	   	}
-	 	   DataSender d1 = new DataSender("response");
+	 	   DataSender d1 = new DataSender("responsedone");
 	 	   d1.start();
 	    }
 }
