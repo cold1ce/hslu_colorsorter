@@ -62,6 +62,8 @@ public class CommandListener extends Thread {
 		    JSONObject obj = (JSONObject) parser.parse(clientSentence);
 		    String command = (String) obj.get("command"); 
 		    
+		    
+		    System.out.println("Befehl war:"+command);
 		    // Auswerten, was der eingegangene Befehl bedeutet
 		    // Danach Ausführen der passenden Methode
 		    
@@ -87,23 +89,6 @@ public class CommandListener extends Thread {
 		    		DataSender d1 = new DataSender("response");
 		    		d1.start();
 		    	}
-		    }
-		    
-		    // Falls der Command "getstatus" lautet
-		    else if (command.equals("getstatus")) {
-		    	getStatusev3();
-		    }
-		    
-		    // Falls der Command "filter" lautet
-		    else if (command.equals("filter")) {
-		    	String color = (String) obj.get("color");
-		    	String status = (String) obj.get("status");
-		    	if (status.equalsIgnoreCase("true") || status.equalsIgnoreCase("false")) {
-		    	    boolean statusbool = Boolean.valueOf(status);
-		    	    System.out.println("Color ist:" +color);
-			    	filter(color, statusbool); 
-		    	}
-
 		    }
 		    else {
 		    	System.out.println("Unbekannter Befehl!");
