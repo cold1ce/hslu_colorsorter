@@ -41,7 +41,7 @@ public class DataSender extends Thread {
 				sendMessageToRaspi("{\"DeviceID\":\""+Machine.deviceid+"\",\"Machine_running\":\""+Machine.machinerunning+"\",\"Stones_scanned\":\""+Machine.stonescounted+"\"}");
 			}
 			else if (command.equals("responsemachinestopped")) {
-				sendMessageToRaspi("{\"DeviceID\":\""+Machine.deviceid+"\",\"Response\":\"done\",\"Total_stones_counted\":\""+Machine.stonescounted+"\"}");
+				sendMessageToRaspi("{\"DeviceID\":\""+Machine.deviceid+"\",\"Response\":\"done\",\"Total_stones_scanned\":\""+Machine.stonescounted+"\"}");
 			}
 		} 
 		catch (IOException e) {
