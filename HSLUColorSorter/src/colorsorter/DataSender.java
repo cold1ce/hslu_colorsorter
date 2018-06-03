@@ -1,3 +1,6 @@
+// Diese Klasse übermittelt verschiedene Daten des Roboters an den
+// mit Bluetooth angebundenen Raspberry Pi
+
 package colorsorter;
 
 import java.io.DataOutputStream;
@@ -49,6 +52,8 @@ public class DataSender extends Thread {
 		}
 	}
 	
+	// Eigentliche Übermittlungsmethode, in welcher der String im Argument der Methode
+	// übermittelt wird.
 	public void sendMessageToRaspi(String message) throws IOException {
 		Socket clientSocket = new Socket(Machine.ipraspi, Machine.socket1);
 	    DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());

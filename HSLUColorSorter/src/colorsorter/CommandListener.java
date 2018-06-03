@@ -108,6 +108,8 @@ public class CommandListener extends Thread {
 		    }
 		    else {
 		    	System.out.println("Unbekannter Befehl!");
+		    	DataSender d1 = new DataSender("responsefailure");
+	    		d1.start();
 		    }
 		}
 		
@@ -124,8 +126,8 @@ public class CommandListener extends Thread {
 	    // Stopt den Sortiervorgang
 	    protected static void stopev3() {
 	    	Machine.machinerunning = false;
-	    	DataSender d1 = new DataSender("responsemachinestopped");
-	 	   	d1.start(); 	
+	    	//Anmerkung: Hier wird das Senden von Daten in der ColorSorter
+	    	//Methode durchgeführt.
 	    }
 	    
 	    // Sendet ein Datenpaket mit dem aktuellen Status des

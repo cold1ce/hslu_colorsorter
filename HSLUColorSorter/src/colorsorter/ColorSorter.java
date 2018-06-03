@@ -128,21 +128,31 @@ public class ColorSorter extends Thread{
 		Delay.msDelay(50);
 			
 		}
+		stopProcess();
+		this.interrupt();
+	}	
 		
 		// Falls die Maschine per Befehl angehalten wird, halte das Förderband an
 		// und deaktiviere den Sensor. Setze die LED am EV3 auf Gelb.
+	public static void stopProcess() {
+		//Stoppe Sensoren und Motoren
 		colorSensor.close();
 		Machine.feederband.stop();
-		System.out.println("Scan Thread vorbei.");
 		Machine.feederband.close();
+		//Sende Nachricht
 		DataSender d1 = new DataSender("responsemachinestopped");
+ 	   	d1.start();
+ 	   	Button.LEDPattern(6);
+ 	   	
+ 	   	//Setzt die Variablen die eventuell verändert wurden zurück.
+ 	   	Machine.stonescounted = 0;
+	   	Machine.dropred = Machine.dropyellow = 
+		Machine.dropblue = Machine.dropgreen = false;
+	   	Machine.timewithoutstoneonfeederband = 0.0;
+			 
+	}	
 		
-		
-		Button.LEDPattern(6);
-		this.interrupt();
-		
-		
-	}
+	
 	
 	//Überprüft ein Farb-Sample. Wenn die Daten im Farbspektrum eines Steins
 	//liegen, wird der je nach Farbe ein Farbcode zurückgegeben.

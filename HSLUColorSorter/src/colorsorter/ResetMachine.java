@@ -25,6 +25,11 @@ public class ResetMachine {
 		Machine.automaticoff = 20.0;
 		Machine.dropred = Machine.dropyellow = 
 		Machine.dropblue = Machine.dropgreen = false;
+		Machine.stonescounted = 0;
+		Machine.redstonescounted = 0;
+		Machine.yellowstonescounted = 0;
+		Machine.greenstonescounted = 0; 
+		Machine.bluestonescounted = 0;
 		
 	}
 
