@@ -132,8 +132,8 @@ public class ColorSorter extends Thread{
 		this.interrupt();
 	}	
 		
-		// Falls die Maschine per Befehl angehalten wird, halte das Förderband an
-		// und deaktiviere den Sensor. Setze die LED am EV3 auf Gelb.
+	// Falls die Maschine per Befehl angehalten wird, halte das Förderband an
+	// und deaktiviere den Sensor. Setze die LED am EV3 auf Gelb.
 	public static void stopProcess() {
 		//Stoppe Sensoren und Motoren
 		colorSensor.close();
@@ -145,7 +145,7 @@ public class ColorSorter extends Thread{
  	   	Button.LEDPattern(6);
  	   	
  	   	//Setzt die Variablen die eventuell verändert wurden zurück.
- 	   	Machine.stonescounted = 0;
+ 	   	
 	   	Machine.dropred = Machine.dropyellow = 
 		Machine.dropblue = Machine.dropgreen = false;
 	   	Machine.timewithoutstoneonfeederband = 0.0;

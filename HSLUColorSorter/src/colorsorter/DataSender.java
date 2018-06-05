@@ -45,6 +45,7 @@ public class DataSender extends Thread {
 			}
 			else if (command.equals("responsemachinestopped")) {
 				sendMessageToRaspi("{\"DeviceID\":\""+Machine.deviceid+"\",\"Response\":\"done\",\"Total_stones_scanned\":\""+Machine.stonescounted+"\"}");
+				Machine.stonescounted = 0;
 			}
 		} 
 		catch (IOException e) {
