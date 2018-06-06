@@ -41,7 +41,7 @@ public class Machine {
 	
 	// Die IPs von EV3 und RasPi sowie Sockets die verwendet werden
 	public static String ipev3 = "10.0.1.1";
-	public static String ipraspi = "10.0.1.2";
+	public static String ipraspi = "10.0.1.3"; // IP Raspi 10.0.1.3
 	public static int socket1 = 5000;
 	public static int socket2 = 5556; //Aktuell nicht benutzt.
 	
